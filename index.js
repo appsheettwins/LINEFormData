@@ -19,22 +19,6 @@ const LINE_MESSAGING_TOKEN = 'pUcYHL7II8uYofiWV01d84F/gZJkFR3hoDMU/EE1+C7rWJhrYs
 
 
 
-function main(){
-    // 1.liff init
-    // 2.get profile
-    liff.init({liffId: liffId});
-    liff.ready.then(() => {
-        if(!liff.isLoggedIn()){
-            liff.login();
-        }        
-        liff.getProfile().then((profile) => {            
-            userId = profile.userId;
-            console.log(profile);
-        });
-    });    
-}
-
-
 
 
 
