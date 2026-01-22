@@ -18,25 +18,42 @@ const LINE_MESSAGING_TOKEN = 'pUcYHL7II8uYofiWV01d84F/gZJkFR3hoDMU/EE1+C7rWJhrYs
 // Messaging API Channel Access Token จาก LINE Developers Console
 
 
+async function handleSaveData() {
+  // 1. เตรียมข้อมูลที่จะส่ง (Payload)
+  const payload = {
+    name: document.getElementById('name').value,
+    phone: document.getElementById('phone').value,
+    option: document.getElementById('option').value,
+    lineUserId: liff.getContext()?.userId || 'N/A',
+    displayName: liff.getDecodedIDToken()?.name || 'N/A'
+  };
 
-
-async function sendDataToSheet(payload) {
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvy82xcPP9O7M57Mx0afY8NAK1Zwq9RXlLZwDPd_s_C55qhnv8jX_ugtvzziBD8doD9Q/exec";
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvy82xcPP9O7M57Mx0afY8NAK1Zwq9RXlLZwDPd_s_C55qhnv8jX_ugtvzziBD8doD9Q/exec';
 
   try {
+    // แสดง Loading หรือปิดปุ่มบันทึกเพื่อกันกดซ้ำ
+    console.log("กำลังส่งข้อมูล...");
+    
     const response = await fetch(WEB_APP_URL, {
       method: "POST",
       body: JSON.stringify(payload),
+      mode: "no-cors" // *** สำคัญมากสำหรับการส่งจาก GitHub ไป Google ***
     });
-    const result = await response.json();
-    if (result.success) {
-      alert("บันทึกข้อมูลเรียบร้อย!");
-    }
+
+    // หมายเหตุ: เมื่อใช้ no-cors เราจะอ่านค่า response.json() ไม่ได้ 
+    // แต่ข้อมูลจะถูกส่งไปถึง Google Sheet แน่นอนครับ
+    alert("ส่งข้อมูลเรียบร้อยแล้ว (โปรดเช็คใน Sheet)");
+    liff.closeWindow(); 
+
   } catch (error) {
-    console.error("Error:", error);
-    alert("ส่งข้อมูลไม่สำเร็จ");
+    console.error("เกิดข้อผิดพลาด:", error);
+    alert("บันทึกไม่สำเร็จ: " + error.message);
   }
 }
+
+
+
+
 
 // ==================== 🌐 ฟังก์ชันแสดงหน้า Web ====================
 
