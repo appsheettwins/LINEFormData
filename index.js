@@ -1,13 +1,6 @@
 // ==================== ⚙️ ตั้งค่าระบบ ====================
 // ⚠️ สำคัญ: กรุณาแก้ไขค่าเหล่านี้ก่อนใช้งาน
 
-const LINE_NOTIFY_TOKEN = 'ใส่ LINE Notify Token ของคุณที่นี่'; 
-// วิธีสร้าง LINE Notify Token:
-// 1. ไปที่ https://notify-bot.line.me/
-// 2. คลิก My page > Generate token
-// 3. เลือกกลุ่ม/แชทที่ต้องการส่งการแจ้งเตือน
-// 4. คัดลอก Token มาวางที่นี่
-
 const SPREADSHEET_ID = '1lUfArwkheK2JMntkO6zwzXmJL-F5T_qZ8e3VT5W4Sgc';
 // Spreadsheet ID จาก URL: https://docs.google.com/spreadsheets/d/[SPREADSHEET_ID]/edit
 
@@ -18,9 +11,7 @@ const LINE_MESSAGING_TOKEN = 'pUcYHL7II8uYofiWV01d84F/gZJkFR3hoDMU/EE1+C7rWJhrYs
 // Messaging API Channel Access Token จาก LINE Developers Console
 
 
-// ==================== 🌐 ฟังก์ชันแสดงหน้า Web ====================
 
-/**
  * ฟังก์ชันสำหรับแสดงหน้า HTML เมื่อเข้าถึง Web App
  */
 function doGet() {
