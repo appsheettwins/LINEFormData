@@ -208,7 +208,7 @@ function saveToSheet(data) {
  * @param {Object} data - ข้อมูลที่จะส่ง
  * @returns {Object} ผลลัพธ์การส่ง
  */
-function sendLineNotify(data) {
+//function sendLineNotify(data) {
   try {
     // ตรวจสอบว่ามี Token หรือไม่
     if (!LINE_NOTIFY_TOKEN || LINE_NOTIFY_TOKEN === 'ใส่ LINE Notify Token ของคุณที่นี่') {
@@ -280,7 +280,7 @@ ${data.details ? '📝 รายละเอียด: ' + data.details : ''}
  * @param {Object} data - ข้อมูลที่จะส่ง
  * @returns {Object} ผลลัพธ์การส่ง
  */
-function sendLineMessage(data) {
+//function sendLineMessage(data) {
   try {
     // ตรวจสอบว่ามี Token หรือไม่
     if (!LINE_MESSAGING_TOKEN || LINE_MESSAGING_TOKEN === 'ใส่ Messaging API Token ของคุณที่นี่') {
