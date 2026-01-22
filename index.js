@@ -54,25 +54,25 @@ function processForm(data) {
       results.sheetResult = { success: false, message: error.message };
     }
     
-    // // 2. ส่ง LINE Notify (แจ้งเตือนไปยังกลุ่ม/แชทที่ตั้งค่า)
-    // console.log('📢 กำลังส่ง LINE Notify...');
-    // try {
-    //   results.lineNotifyResult = sendLineNotify(data);
-    //   console.log('✅ ส่ง LINE Notify สำเร็จ:', results.lineNotifyResult);
-    // } catch (error) {
-    //   console.error('❌ ส่ง LINE Notify ล้มเหลว:', error);
-    //   results.lineNotifyResult = { success: false, message: error.message };
-    // }
+    // 2. ส่ง LINE Notify (แจ้งเตือนไปยังกลุ่ม/แชทที่ตั้งค่า)
+    console.log('📢 กำลังส่ง LINE Notify...');
+    try {
+      results.lineNotifyResult = sendLineNotify(data);
+      console.log('✅ ส่ง LINE Notify สำเร็จ:', results.lineNotifyResult);
+    } catch (error) {
+      console.error('❌ ส่ง LINE Notify ล้มเหลว:', error);
+      results.lineNotifyResult = { success: false, message: error.message };
+    }
     
-    // // 3. ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน Messaging API
-    // console.log('💬 กำลังส่งข้อความตอบกลับ...');
-    // try {
-    //   results.messageResult = sendLineMessage(data);
-    //   console.log('✅ ส่งข้อความตอบกลับสำเร็จ:', results.messageResult);
-    // } catch (error) {
-    //   console.error('❌ ส่งข้อความตอบกลับล้มเหลว:', error);
-    //   results.messageResult = { success: false, message: error.message };
-    // }
+    // 3. ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน Messaging API
+    console.log('💬 กำลังส่งข้อความตอบกลับ...');
+    try {
+      results.messageResult = sendLineMessage(data);
+      console.log('✅ ส่งข้อความตอบกลับสำเร็จ:', results.messageResult);
+    } catch (error) {
+      console.error('❌ ส่งข้อความตอบกลับล้มเหลว:', error);
+      results.messageResult = { success: false, message: error.message };
+    }
     
     console.log('==================== ประมวลผลเสร็จสิ้น ====================');
     
@@ -91,54 +91,6 @@ function processForm(data) {
 }
 
 
-// /**
-//  * ฟังก์ชันหลักในการรับและประมวลผลข้อมูลจากฟอร์ม
-//  */
-// function processForm(data) {
-//   try {
-//     console.log('==================== เริ่มต้นประมวลผลฟอร์ม ====================');
-//     const results = {};
-    
-//     // 1. บันทึกข้อมูลลง Google Sheet (เก็บส่วนนี้ไว้)
-//     console.log('📊 กำลังบันทึกลง Google Sheet...');
-//     try {
-//       results.sheetResult = saveToSheet(data);
-//       console.log('✅ บันทึก Google Sheet สำเร็จ');
-//     } catch (error) {
-//       console.error('❌ บันทึก Google Sheet ล้มเหลว:', error);
-//       results.sheetResult = { success: false, message: error.message };
-//       throw error; // ให้หยุดทำงานถ้าบันทึก Sheet ไม่สำเร็จ
-//     }
-    
-//     /* --- ปิดส่วนการส่ง LINE ออกทั้งหมด ---
-    
-//     // 2. ส่ง LINE Notify
-//     // (ปิดการใช้งาน)
-    
-//     // 3. ส่งข้อความตอบกลับ
-//     // (ปิดการใช้งาน)
-    
-//     -------------------------------------- */
-    
-//     console.log('==================== ประมวลผลเสร็จสิ้น ====================');
-    
-//     return {
-//       success: true,
-//       message: 'บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว',
-//       timestamp: new Date().toLocaleString('th-TH'),
-//       results: results
-//     };
-    
-//   } catch (error) {
-//     console.error('❌ เกิดข้อผิดพลาด:', error);
-//     throw new Error('เกิดข้อผิดพลาด: ' + error.message);
-//   }
-// }
-
-
-
-
-
 // ==================== 📊 ฟังก์ชันบันทึกข้อมูลลง Google Sheet ====================
 
 /**
@@ -146,243 +98,59 @@ function processForm(data) {
  * @param {Object} data - ข้อมูลที่จะบันทึก
  * @returns {Object} ผลลัพธ์การบันทึก
  */
-// function saveToSheet(data) {
-//   try {
-//     // เปิด Spreadsheet
-//     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-//     let sheet = ss.getSheetByName(SHEET_NAME);
-    
-//     // สร้างแผ่นงานใหม่ถ้ายังไม่มี
-//     if (!sheet) {
-//       console.log('📄 สร้างแผ่นงานใหม่:', SHEET_NAME);
-//       sheet = ss.insertSheet(SHEET_NAME);
-      
-//       // เพิ่มหัวตาราง
-//       const headers = [
-//         'วันที่-เวลา',
-//         'ชื่อ-นามสกุล', 
-//         'เบอร์โทร',
-//         'กิจกรรม',
-//         'รายการย่อย',
-//         'รายละเอียด',
-//         'LINE User ID',
-//         'LINE Display Name',
-//         'Picture URL'
-//       ];
-//       sheet.appendRow(headers);
-      
-//       // จัดรูปแบบหัวตาราง
-//       const headerRange = sheet.getRange(1, 1, 1, headers.length);
-//       headerRange.setBackground('#667eea');
-//       headerRange.setFontColor('#ffffff');
-//       headerRange.setFontWeight('bold');
-//       headerRange.setHorizontalAlignment('center');
-//       headerRange.setVerticalAlignment('middle');
-      
-//       // ตั้งค่าความกว้างคอลัมน์
-//       sheet.setColumnWidth(1, 150); // วันที่-เวลา
-//       sheet.setColumnWidth(2, 150); // ชื่อ-นามสกุล
-//       sheet.setColumnWidth(3, 120); // เบอร์โทร
-//       sheet.setColumnWidth(4, 120); // กิจกรรม
-//       sheet.setColumnWidth(5, 180); // รายการย่อย
-//       sheet.setColumnWidth(6, 200); // รายละเอียด
-//       sheet.setColumnWidth(7, 250); // LINE User ID
-//       sheet.setColumnWidth(8, 150); // LINE Display Name
-//       sheet.setColumnWidth(9, 250); // Picture URL
-      
-//       // ตรึงแถวแรก
-//       sheet.setFrozenRows(1);
-      
-//       console.log('✅ สร้างแผ่นงานและหัวตารางสำเร็จ');
-//     }
-    
-//     // เพิ่มข้อมูลแถวใหม่
-//     const rowData = [
-//       data.timestamp || new Date().toLocaleString('th-TH'),
-//       data.name || '',
-//       data.phone || '',
-//       data.option || '',
-//       data.sub_option || '',
-//       data.details || '-',
-//       data.lineUserId || '',
-//       data.displayName || '',
-//       data.pictureUrl || ''
-//     ];
-    
-//     sheet.appendRow(rowData);
-    
-//     // จัดรูปแบบแถวข้อมูล
-//     const lastRow = sheet.getLastRow();
-//     const dataRange = sheet.getRange(lastRow, 1, 1, rowData.length);
-    
-//     // เพิ่มเส้นขอบ
-//     dataRange.setBorder(
-//       true, true, true, true, true, true,
-//       '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID
-//     );
-    
-//     // จัดแนวข้อความ
-//     dataRange.setVerticalAlignment('middle');
-//     sheet.getRange(lastRow, 1, 1, 1).setHorizontalAlignment('center'); // วันที่-เวลา
-//     sheet.getRange(lastRow, 2, 1, 1).setHorizontalAlignment('left');   // ชื่อ
-//     sheet.getRange(lastRow, 3, 1, 1).setHorizontalAlignment('center'); // เบอร์
-    
-//     // สลับสีแถว
-//     if (lastRow % 2 === 0) {
-//       dataRange.setBackground('#f9fafb');
-//     }
-    
-//     console.log('✅ บันทึกข้อมูลสำเร็จที่แถว:', lastRow);
-    
-//     return {
-//       success: true,
-//       message: 'บันทึกลง Google Sheet สำเร็จ',
-//       row: lastRow,
-//       sheetName: SHEET_NAME,
-//       spreadsheetUrl: ss.getUrl()
-//     };
-    
-//   } catch (error) {
-//     console.error('❌ เกิดข้อผิดพลาดในการบันทึก Sheet:', error);
-//     throw new Error('ไม่สามารถบันทึกลง Google Sheet: ' + error.message);
-//   }
-// }
-
-// อย่าลืมประกาศตัวแปรเหล่านี้ไว้ด้านบนสุดของไฟล์
-
-// function saveToSheet(data) {
-//   try {
-//     // 1. เปิด Spreadsheet และตรวจสอบ Sheet
-//     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-//     let sheet = ss.getSheetByName(SHEET_NAME);
-    
-//     // 2. ถ้าไม่มี Sheet ให้สร้างใหม่พร้อมตั้งค่าเริ่มต้น (ทำครั้งเดียว)
-//     if (!sheet) {
-//       console.log('📄 สร้างแผ่นงานใหม่:', SHEET_NAME);
-//       sheet = ss.insertSheet(SHEET_NAME);
-      
-//       const headers = [
-//         'วันที่-เวลา', 'ชื่อ-นามสกุล', 'เบอร์โทร', 'กิจกรรม', 
-//         'รายการย่อย', 'รายละเอียด', 'LINE User ID', 
-//         'LINE Display Name', 'Picture URL'
-//       ];
-//       sheet.appendRow(headers);
-      
-//       // จัดรูปแบบหัวตาราง (Header)
-//       const headerRange = sheet.getRange(1, 1, 1, headers.length);
-//       headerRange.setBackground('#667eea')
-//                  .setFontColor('#ffffff')
-//                  .setFontWeight('bold')
-//                  .setHorizontalAlignment('center')
-//                  .setVerticalAlignment('middle');
-      
-//       // ตั้งค่าความกว้างคอลัมน์
-//       const widths = [180, 150, 120, 120, 180, 200, 250, 150, 250];
-//       widths.forEach((width, index) => {
-//         sheet.setColumnWidth(index + 1, width);
-//       });
-      
-//       sheet.setFrozenRows(1);
-//     }
-    
-//     // 3. เตรียมข้อมูล (ใช้ new Date() เพื่อให้ Google Sheet มองเป็นวันที่จริงๆ)
-//     const rowData = [
-//       data.timestamp ? new Date(data.timestamp) : new Date(), 
-//       data.name || '',
-//       data.phone || '',
-//       data.option || '',
-//       data.sub_option || '',
-//       data.details || '-',
-//       data.lineUserId || '',
-//       data.displayName || '',
-//       data.pictureUrl || ''
-//     ];
-    
-//     // 4. บันทึกข้อมูล
-//     sheet.appendRow(rowData);
-    
-//     // 5. จัดรูปแบบแถวที่เพิ่งเพิ่ม (ทำเฉพาะที่จำเป็นเพื่อความเร็ว)
-//     const lastRow = sheet.getLastRow();
-//     const lastColumn = rowData.length;
-//     const dataRange = sheet.getRange(lastRow, 1, 1, lastColumn);
-    
-//     // จัดตำแหน่งข้อความ
-//     dataRange.setVerticalAlignment('middle');
-//     sheet.getRange(lastRow, 1).setHorizontalAlignment('center'); // วันที่
-//     sheet.getRange(lastRow, 3).setHorizontalAlignment('center'); // เบอร์โทร
-    
-//     // ใส่เส้นขอบแบบเบาๆ และสลับสี (Optional)
-//     dataRange.setBorder(true, true, true, true, true, true, '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID);
-//     if (lastRow % 2 === 0) {
-//       dataRange.setBackground('#f9fafb');
-//     }
-
-//     console.log('✅ บันทึกข้อมูลสำเร็จที่แถว:', lastRow);
-    
-//     return {
-//       success: true,
-//       row: lastRow,
-//       sheetName: SHEET_NAME
-//     };
-    
-//   } catch (error) {
-//     console.error('❌ เกิดข้อผิดพลาด:', error);
-//     return { success: false, message: error.message };
-//   }
-// }
-
-// --- ส่วนการตั้งค่า (Global Variables) ---
-
-
-/**
- * ฟังก์ชันบันทึกข้อมูลลง Google Sheet
- * @param {Object} data - ข้อมูลที่ได้รับจากฟอร์มหรือ Webhook
- */
 function saveToSheet(data) {
   try {
-    // 1. ตรวจสอบเบื้องต้นว่ามีข้อมูล data ส่งเข้ามาหรือไม่
-    // ป้องกัน Error: Cannot read properties of undefined
-    if (!data) {
-      throw new Error('ไม่พบข้อมูล (Data is undefined)');
-    }
-
-    // 2. เปิด Spreadsheet และตรวจสอบ Sheet
+    // เปิด Spreadsheet
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     let sheet = ss.getSheetByName(SHEET_NAME);
     
-    // 3. ถ้าไม่มี Sheet ให้สร้างใหม่พร้อมตั้งค่าหัวตาราง
+    // สร้างแผ่นงานใหม่ถ้ายังไม่มี
     if (!sheet) {
       console.log('📄 สร้างแผ่นงานใหม่:', SHEET_NAME);
       sheet = ss.insertSheet(SHEET_NAME);
       
+      // เพิ่มหัวตาราง
       const headers = [
-        'วันที่-เวลา', 'ชื่อ-นามสกุล', 'เบอร์โทร', 'กิจกรรม', 
-        'รายการย่อย', 'รายละเอียด', 'LINE User ID', 
-        'LINE Display Name', 'Picture URL'
+        'วันที่-เวลา',
+        'ชื่อ-นามสกุล', 
+        'เบอร์โทร',
+        'กิจกรรม',
+        'รายการย่อย',
+        'รายละเอียด',
+        'LINE User ID',
+        'LINE Display Name',
+        'Picture URL'
       ];
       sheet.appendRow(headers);
       
       // จัดรูปแบบหัวตาราง
       const headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setBackground('#667eea')
-                 .setFontColor('#ffffff')
-                 .setFontWeight('bold')
-                 .setHorizontalAlignment('center')
-                 .setVerticalAlignment('middle');
+      headerRange.setBackground('#667eea');
+      headerRange.setFontColor('#ffffff');
+      headerRange.setFontWeight('bold');
+      headerRange.setHorizontalAlignment('center');
+      headerRange.setVerticalAlignment('middle');
       
-      // ตั้งค่าความกว้างคอลัมน์ (ทำครั้งเดียวตอนสร้าง Sheet)
-      const widths = [180, 150, 120, 120, 180, 200, 250, 150, 250];
-      widths.forEach((width, index) => {
-        sheet.setColumnWidth(index + 1, width);
-      });
+      // ตั้งค่าความกว้างคอลัมน์
+      sheet.setColumnWidth(1, 150); // วันที่-เวลา
+      sheet.setColumnWidth(2, 150); // ชื่อ-นามสกุล
+      sheet.setColumnWidth(3, 120); // เบอร์โทร
+      sheet.setColumnWidth(4, 120); // กิจกรรม
+      sheet.setColumnWidth(5, 180); // รายการย่อย
+      sheet.setColumnWidth(6, 200); // รายละเอียด
+      sheet.setColumnWidth(7, 250); // LINE User ID
+      sheet.setColumnWidth(8, 150); // LINE Display Name
+      sheet.setColumnWidth(9, 250); // Picture URL
       
+      // ตรึงแถวแรก
       sheet.setFrozenRows(1);
+      
+      console.log('✅ สร้างแผ่นงานและหัวตารางสำเร็จ');
     }
     
-    // 4. เตรียมข้อมูล โดยใช้ Optional Chaining (?.) เพื่อกันพังหาก Key บางตัวหายไป
-    // และใช้การจัดการวันที่ให้เป็น Format ของ Google Sheet โดยตรง
+    // เพิ่มข้อมูลแถวใหม่
     const rowData = [
-      data.timestamp ? new Date(data.timestamp) : new Date(), // ถ้าไม่มี timestamp ให้ใช้วันที่ปัจจุบัน
+      data.timestamp || new Date().toLocaleString('th-TH'),
       data.name || '',
       data.phone || '',
       data.option || '',
@@ -393,57 +161,44 @@ function saveToSheet(data) {
       data.pictureUrl || ''
     ];
     
-    // 5. บันทึกข้อมูลแถวใหม่
     sheet.appendRow(rowData);
     
-    // 6. จัดรูปแบบแถวข้อมูลล่าสุด (Last Row)
+    // จัดรูปแบบแถวข้อมูล
     const lastRow = sheet.getLastRow();
     const dataRange = sheet.getRange(lastRow, 1, 1, rowData.length);
     
-    // ตั้งค่าพื้นฐาน (Vertical Center และ Border)
-    dataRange.setVerticalAlignment('middle')
-             .setBorder(true, true, true, true, true, true, '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID);
+    // เพิ่มเส้นขอบ
+    dataRange.setBorder(
+      true, true, true, true, true, true,
+      '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID
+    );
     
-    // จัดตำแหน่งเฉพาะคอลัมน์ (Center สำหรับ วันที่ และ เบอร์โทร)
-    sheet.getRange(lastRow, 1).setHorizontalAlignment('center'); 
-    sheet.getRange(lastRow, 3).setHorizontalAlignment('center'); 
+    // จัดแนวข้อความ
+    dataRange.setVerticalAlignment('middle');
+    sheet.getRange(lastRow, 1, 1, 1).setHorizontalAlignment('center'); // วันที่-เวลา
+    sheet.getRange(lastRow, 2, 1, 1).setHorizontalAlignment('left');   // ชื่อ
+    sheet.getRange(lastRow, 3, 1, 1).setHorizontalAlignment('center'); // เบอร์
     
-    // สลับสีแถว (Zebra Stripe)
+    // สลับสีแถว
     if (lastRow % 2 === 0) {
       dataRange.setBackground('#f9fafb');
     }
-
+    
     console.log('✅ บันทึกข้อมูลสำเร็จที่แถว:', lastRow);
     
     return {
       success: true,
       message: 'บันทึกลง Google Sheet สำเร็จ',
-      row: lastRow
+      row: lastRow,
+      sheetName: SHEET_NAME,
+      spreadsheetUrl: ss.getUrl()
     };
     
   } catch (error) {
-    console.error('❌ เกิดข้อผิดพลาดใน saveToSheet:', error.message);
-    return {
-      success: false,
-      message: error.message
-    };
+    console.error('❌ เกิดข้อผิดพลาดในการบันทึก Sheet:', error);
+    throw new Error('ไม่สามารถบันทึกลง Google Sheet: ' + error.message);
   }
 }
-
-/**
- * ฟังก์ชันสำหรับทดสอบ (กดรันอันนี้เพื่อเช็คว่าโค้ดทำงานได้ไหม)
- */
-function testSave() {
-  const mockData = {
-    name: "ทดสอบ ระบบ",
-    phone: "081-111-1111",
-    option: "สมัครสมาชิก",
-    details: "ทดสอบการส่งข้อมูล"
-  };
-  const result = saveToSheet(mockData);
-  Logger.log(result);
-}
-
 
 
 // ==================== 📢 ฟังก์ชันส่ง LINE Notify ====================
@@ -453,161 +208,161 @@ function testSave() {
  * @param {Object} data - ข้อมูลที่จะส่ง
  * @returns {Object} ผลลัพธ์การส่ง
  */
-// function sendLineNotify(data) {
-//   try {
-//     // ตรวจสอบว่ามี Token หรือไม่
-//     if (!LINE_NOTIFY_TOKEN || LINE_NOTIFY_TOKEN === 'ใส่ LINE Notify Token ของคุณที่นี่') {
-//       console.warn('⚠️ LINE Notify Token ยังไม่ได้ตั้งค่า');
-//       return { 
-//         success: false, 
-//         message: 'LINE Notify Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
-//       };
-//     }
+function sendLineNotify(data) {
+  try {
+    // ตรวจสอบว่ามี Token หรือไม่
+    if (!LINE_NOTIFY_TOKEN || LINE_NOTIFY_TOKEN === 'ใส่ LINE Notify Token ของคุณที่นี่') {
+      console.warn('⚠️ LINE Notify Token ยังไม่ได้ตั้งค่า');
+      return { 
+        success: false, 
+        message: 'LINE Notify Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
+      };
+    }
     
-//     // สร้างข้อความแจ้งเตือน
-//     const message = `
-// 🎉 มีการลงทะเบียนใหม่!
+    // สร้างข้อความแจ้งเตือน
+    const message = `
+🎉 มีการลงทะเบียนใหม่!
 
-// 👤 ชื่อ: ${data.name}
-// 📞 เบอร์: ${data.phone}
-// 🎯 กิจกรรม: ${data.option}
-// 📍 รายการ: ${data.sub_option}
-// ${data.details ? '📝 รายละเอียด: ' + data.details : ''}
+👤 ชื่อ: ${data.name}
+📞 เบอร์: ${data.phone}
+🎯 กิจกรรม: ${data.option}
+📍 รายการ: ${data.sub_option}
+${data.details ? '📝 รายละเอียด: ' + data.details : ''}
 
-// 👥 ชื่อใน LINE: ${data.displayName || '-'}
-// 🆔 User ID: ${data.lineUserId}
-// ⏰ เวลา: ${data.timestamp || new Date().toLocaleString('th-TH')}
-//     `.trim();
+👥 ชื่อใน LINE: ${data.displayName || '-'}
+🆔 User ID: ${data.lineUserId}
+⏰ เวลา: ${data.timestamp || new Date().toLocaleString('th-TH')}
+    `.trim();
     
-//     // ส่งข้อความผ่าน LINE Notify API
-//     const url = 'https://notify-api.line.me/api/notify';
-//     const options = {
-//       method: 'post',
-//       headers: {
-//         'Authorization': 'Bearer ' + LINE_NOTIFY_TOKEN,
-//         'Content-Type': 'application/x-www-form-urlencoded'
-//       },
-//       payload: {
-//         message: message
-//       }
-//     };
+    // ส่งข้อความผ่าน LINE Notify API
+    const url = 'https://notify-api.line.me/api/notify';
+    const options = {
+      method: 'post',
+      headers: {
+        'Authorization': 'Bearer ' + LINE_NOTIFY_TOKEN,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      payload: {
+        message: message
+      }
+    };
     
-//     const response = UrlFetchApp.fetch(url, options);
-//     const result = JSON.parse(response.getContentText());
+    const response = UrlFetchApp.fetch(url, options);
+    const result = JSON.parse(response.getContentText());
     
-//     console.log('📨 LINE Notify API response:', result);
+    console.log('📨 LINE Notify API response:', result);
     
-//     if (result.status === 200) {
-//       return {
-//         success: true,
-//         message: 'ส่ง LINE Notify สำเร็จ',
-//         response: result
-//       };
-//     } else {
-//       throw new Error('LINE Notify API returned status: ' + result.status);
-//     }
+    if (result.status === 200) {
+      return {
+        success: true,
+        message: 'ส่ง LINE Notify สำเร็จ',
+        response: result
+      };
+    } else {
+      throw new Error('LINE Notify API returned status: ' + result.status);
+    }
     
-//   } catch (error) {
-//     console.error('❌ เกิดข้อผิดพลาดในการส่ง LINE Notify:', error);
-//     // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
-//     return {
-//       success: false,
-//       message: 'ส่ง LINE Notify ไม่สำเร็จ: ' + error.message
-//     };
-//   }
-// }
+  } catch (error) {
+    console.error('❌ เกิดข้อผิดพลาดในการส่ง LINE Notify:', error);
+    // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
+    return {
+      success: false,
+      message: 'ส่ง LINE Notify ไม่สำเร็จ: ' + error.message
+    };
+  }
+}
 
 
-// // ==================== 💬 ฟังก์ชันส่งข้อความตอบกลับผ่าน Messaging API ====================
+// ==================== 💬 ฟังก์ชันส่งข้อความตอบกลับผ่าน Messaging API ====================
 
-// /**
-//  * ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน LINE Messaging API
-//  * @param {Object} data - ข้อมูลที่จะส่ง
-//  * @returns {Object} ผลลัพธ์การส่ง
-//  */
-// function sendLineMessage(data) {
-//   try {
-//     // ตรวจสอบว่ามี Token หรือไม่
-//     if (!LINE_MESSAGING_TOKEN || LINE_MESSAGING_TOKEN === 'ใส่ Messaging API Token ของคุณที่นี่') {
-//       console.warn('⚠️ LINE Messaging API Token ยังไม่ได้ตั้งค่า');
-//       return { 
-//         success: false, 
-//         message: 'LINE Messaging API Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
-//       };
-//     }
+/**
+ * ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน LINE Messaging API
+ * @param {Object} data - ข้อมูลที่จะส่ง
+ * @returns {Object} ผลลัพธ์การส่ง
+ */
+function sendLineMessage(data) {
+  try {
+    // ตรวจสอบว่ามี Token หรือไม่
+    if (!LINE_MESSAGING_TOKEN || LINE_MESSAGING_TOKEN === 'ใส่ Messaging API Token ของคุณที่นี่') {
+      console.warn('⚠️ LINE Messaging API Token ยังไม่ได้ตั้งค่า');
+      return { 
+        success: false, 
+        message: 'LINE Messaging API Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
+      };
+    }
     
-//     // ตรวจสอบว่ามี User ID หรือไม่
-//     if (!data.lineUserId) {
-//       console.warn('⚠️ ไม่พบ LINE User ID');
-//       return { 
-//         success: false, 
-//         message: 'ไม่พบ LINE User ID' 
-//       };
-//     }
+    // ตรวจสอบว่ามี User ID หรือไม่
+    if (!data.lineUserId) {
+      console.warn('⚠️ ไม่พบ LINE User ID');
+      return { 
+        success: false, 
+        message: 'ไม่พบ LINE User ID' 
+      };
+    }
     
-//     // สร้างข้อความตอบกลับ
-//     const replyMessage = `✅ ลงทะเบียนสำเร็จ!
+    // สร้างข้อความตอบกลับ
+    const replyMessage = `✅ ลงทะเบียนสำเร็จ!
 
-// สวัสดีคุณ ${data.name} 👋
+สวัสดีคุณ ${data.name} 👋
 
-// 📋 ข้อมูลการลงทะเบียนของคุณ:
-// 👤 ชื่อ: ${data.name}
-// 📞 เบอร์: ${data.phone}
-// 🎯 กิจกรรม: ${data.option}
-// 📍 รายการ: ${data.sub_option}
-// ${data.details ? '📝 รายละเอียด: ' + data.details : ''}
+📋 ข้อมูลการลงทะเบียนของคุณ:
+👤 ชื่อ: ${data.name}
+📞 เบอร์: ${data.phone}
+🎯 กิจกรรม: ${data.option}
+📍 รายการ: ${data.sub_option}
+${data.details ? '📝 รายละเอียด: ' + data.details : ''}
 
-// ⏰ วันที่: ${data.timestamp || new Date().toLocaleString('th-TH')}
+⏰ วันที่: ${data.timestamp || new Date().toLocaleString('th-TH')}
 
-// ขอบคุณที่ลงทะเบียนค่ะ 🙏
-// เราจะติดต่อกลับไปในเร็วๆ นี้`;
+ขอบคุณที่ลงทะเบียนค่ะ 🙏
+เราจะติดต่อกลับไปในเร็วๆ นี้`;
     
-//     // ส่งข้อความผ่าน LINE Messaging API
-//     const url = 'https://api.line.me/v2/bot/message/push';
-//     const options = {
-//       method: 'post',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': 'Bearer ' + LINE_MESSAGING_TOKEN
-//       },
-//       payload: JSON.stringify({
-//         to: data.lineUserId,
-//         messages: [
-//           {
-//             type: 'text',
-//             text: replyMessage
-//           }
-//         ]
-//       }),
-//       muteHttpExceptions: true
-//     };
+    // ส่งข้อความผ่าน LINE Messaging API
+    const url = 'https://api.line.me/v2/bot/message/push';
+    const options = {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + LINE_MESSAGING_TOKEN
+      },
+      payload: JSON.stringify({
+        to: data.lineUserId,
+        messages: [
+          {
+            type: 'text',
+            text: replyMessage
+          }
+        ]
+      }),
+      muteHttpExceptions: true
+    };
     
-//     const response = UrlFetchApp.fetch(url, options);
-//     const responseCode = response.getResponseCode();
-//     const result = JSON.parse(response.getContentText());
+    const response = UrlFetchApp.fetch(url, options);
+    const responseCode = response.getResponseCode();
+    const result = JSON.parse(response.getContentText());
     
-//     console.log('💬 LINE Messaging API response code:', responseCode);
-//     console.log('💬 LINE Messaging API response:', result);
+    console.log('💬 LINE Messaging API response code:', responseCode);
+    console.log('💬 LINE Messaging API response:', result);
     
-//     if (responseCode === 200) {
-//       return {
-//         success: true,
-//         message: 'ส่งข้อความตอบกลับสำเร็จ',
-//         response: result
-//       };
-//     } else {
-//       throw new Error('LINE Messaging API returned code: ' + responseCode + ', message: ' + JSON.stringify(result));
-//     }
+    if (responseCode === 200) {
+      return {
+        success: true,
+        message: 'ส่งข้อความตอบกลับสำเร็จ',
+        response: result
+      };
+    } else {
+      throw new Error('LINE Messaging API returned code: ' + responseCode + ', message: ' + JSON.stringify(result));
+    }
     
-//   } catch (error) {
-//     console.error('❌ เกิดข้อผิดพลาดในการส่งข้อความ:', error);
-//     // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
-//     return {
-//       success: false,
-//       message: 'ส่งข้อความตอบกลับไม่สำเร็จ: ' + error.message
-//     };
-//   }
-// }
+  } catch (error) {
+    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อความ:', error);
+    // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
+    return {
+      success: false,
+      message: 'ส่งข้อความตอบกลับไม่สำเร็จ: ' + error.message
+    };
+  }
+}
 
 
 // ==================== 🧪 ฟังก์ชันทดสอบระบบ ====================
