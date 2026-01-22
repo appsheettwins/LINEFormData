@@ -17,6 +17,36 @@ const SHEET_NAME = 'ลงทะเบียนกิจกรรม';
 const LINE_MESSAGING_TOKEN = 'pUcYHL7II8uYofiWV01d84F/gZJkFR3hoDMU/EE1+C7rWJhrYskpfpMsm8bTgs1pcSB1Htc7Waf34BM5biopYhTEed9cCHiV1JscVL3YddvkDU2PXLQkjTv1t2Kwtmmh97sviafI8ft/TFgqXyMIVgdB04t89/1O/w1cDnyilFU=';
 // Messaging API Channel Access Token จาก LINE Developers Console
 
+// ฟังก์ชันเริ่มต้นใช้งาน LIFF
+async function main() {
+  try {
+    // 1. ตรวจสอบก่อนว่า LIFF พร้อมทำงานไหม (ใส่ LIFF ID ของคุณ)
+    await liff.init({ liffId: "2008940385-theIq9K7" });
+
+    // 2. เช็คว่า Login หรือยัง ถ้ายังให้พาไปหน้า Login
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    } else {
+      // 3. ถ้า Login แล้ว ให้ดึงข้อมูลโปรไฟล์มาเตรียมไว้
+      const profile = await liff.getProfile();
+      console.log("Login สำเร็จ:", profile.displayName);
+      
+      // เก็บค่าโปรไฟล์ไว้ในตัวแปรเพื่อใช้ส่งไป Google Sheet
+      window.userData = {
+        lineUserId: profile.userId,
+        displayName: profile.displayName,
+        pictureUrl: profile.pictureUrl
+      };
+    }
+  } catch (error) {
+    console.error("LIFF Error:", error);
+  }
+}
+
+
+
+
+
 
 async function handleSaveData() {
   // 1. เตรียมข้อมูลที่จะส่ง (Payload)
@@ -52,31 +82,7 @@ async function handleSaveData() {
 }
 
 
-// ฟังก์ชันเริ่มต้นใช้งาน LIFF
-async function main() {
-  try {
-    // 1. ตรวจสอบก่อนว่า LIFF พร้อมทำงานไหม (ใส่ LIFF ID ของคุณ)
-    await liff.init({ liffId: "ใส่-LIFF-ID-ของคุณ-ตรงนี้" });
 
-    // 2. เช็คว่า Login หรือยัง ถ้ายังให้พาไปหน้า Login
-    if (!liff.isLoggedIn()) {
-      liff.login();
-    } else {
-      // 3. ถ้า Login แล้ว ให้ดึงข้อมูลโปรไฟล์มาเตรียมไว้
-      const profile = await liff.getProfile();
-      console.log("Login สำเร็จ:", profile.displayName);
-      
-      // เก็บค่าโปรไฟล์ไว้ในตัวแปรเพื่อใช้ส่งไป Google Sheet
-      window.userData = {
-        lineUserId: profile.userId,
-        displayName: profile.displayName,
-        pictureUrl: profile.pictureUrl
-      };
-    }
-  } catch (error) {
-    console.error("LIFF Error:", error);
-  }
-}
 
 async function submitForm() {
   const payload = {
