@@ -87,59 +87,150 @@ function doGet() {
  * @param {Object} data - ข้อมูลที่จะบันทึก
  * @returns {Object} ผลลัพธ์การบันทึก
  */
+// function saveToSheet(data) {
+//   try {
+//     // เปิด Spreadsheet
+//     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+//     let sheet = ss.getSheetByName(SHEET_NAME);
+    
+//     // สร้างแผ่นงานใหม่ถ้ายังไม่มี
+//     if (!sheet) {
+//       console.log('📄 สร้างแผ่นงานใหม่:', SHEET_NAME);
+//       sheet = ss.insertSheet(SHEET_NAME);
+      
+//       // เพิ่มหัวตาราง
+//       const headers = [
+//         'วันที่-เวลา',
+//         'ชื่อ-นามสกุล', 
+//         'เบอร์โทร',
+//         'กิจกรรม',
+//         'รายการย่อย',
+//         'รายละเอียด',
+//         'LINE User ID',
+//         'LINE Display Name',
+//         'Picture URL'
+//       ];
+//       sheet.appendRow(headers);
+      
+//       // จัดรูปแบบหัวตาราง
+//       const headerRange = sheet.getRange(1, 1, 1, headers.length);
+//       headerRange.setBackground('#667eea');
+//       headerRange.setFontColor('#ffffff');
+//       headerRange.setFontWeight('bold');
+//       headerRange.setHorizontalAlignment('center');
+//       headerRange.setVerticalAlignment('middle');
+      
+//       // ตั้งค่าความกว้างคอลัมน์
+//       sheet.setColumnWidth(1, 150); // วันที่-เวลา
+//       sheet.setColumnWidth(2, 150); // ชื่อ-นามสกุล
+//       sheet.setColumnWidth(3, 120); // เบอร์โทร
+//       sheet.setColumnWidth(4, 120); // กิจกรรม
+//       sheet.setColumnWidth(5, 180); // รายการย่อย
+//       sheet.setColumnWidth(6, 200); // รายละเอียด
+//       sheet.setColumnWidth(7, 250); // LINE User ID
+//       sheet.setColumnWidth(8, 150); // LINE Display Name
+//       sheet.setColumnWidth(9, 250); // Picture URL
+      
+//       // ตรึงแถวแรก
+//       sheet.setFrozenRows(1);
+      
+//       console.log('✅ สร้างแผ่นงานและหัวตารางสำเร็จ');
+//     }
+    
+//     // เพิ่มข้อมูลแถวใหม่
+//     const rowData = [
+//       data.timestamp || new Date().toLocaleString('th-TH'),
+//       data.name || '',
+//       data.phone || '',
+//       data.option || '',
+//       data.sub_option || '',
+//       data.details || '-',
+//       data.lineUserId || '',
+//       data.displayName || '',
+//       data.pictureUrl || ''
+//     ];
+    
+//     sheet.appendRow(rowData);
+    
+//     // จัดรูปแบบแถวข้อมูล
+//     const lastRow = sheet.getLastRow();
+//     const dataRange = sheet.getRange(lastRow, 1, 1, rowData.length);
+    
+//     // เพิ่มเส้นขอบ
+//     dataRange.setBorder(
+//       true, true, true, true, true, true,
+//       '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID
+//     );
+    
+//     // จัดแนวข้อความ
+//     dataRange.setVerticalAlignment('middle');
+//     sheet.getRange(lastRow, 1, 1, 1).setHorizontalAlignment('center'); // วันที่-เวลา
+//     sheet.getRange(lastRow, 2, 1, 1).setHorizontalAlignment('left');   // ชื่อ
+//     sheet.getRange(lastRow, 3, 1, 1).setHorizontalAlignment('center'); // เบอร์
+    
+//     // สลับสีแถว
+//     if (lastRow % 2 === 0) {
+//       dataRange.setBackground('#f9fafb');
+//     }
+    
+//     console.log('✅ บันทึกข้อมูลสำเร็จที่แถว:', lastRow);
+    
+//     return {
+//       success: true,
+//       message: 'บันทึกลง Google Sheet สำเร็จ',
+//       row: lastRow,
+//       sheetName: SHEET_NAME,
+//       spreadsheetUrl: ss.getUrl()
+//     };
+    
+//   } catch (error) {
+//     console.error('❌ เกิดข้อผิดพลาดในการบันทึก Sheet:', error);
+//     throw new Error('ไม่สามารถบันทึกลง Google Sheet: ' + error.message);
+//   }
+// }
+
+// อย่าลืมประกาศตัวแปรเหล่านี้ไว้ด้านบนสุดของไฟล์
+const SPREADSHEET_ID = '1lUfArwkheK2JMntkO6zwzXmJL-F5T_qZ8e3VT5W4Sgc';
+const SHEET_NAME = 'ลงทะเบียนกิจกรรม';
+
 function saveToSheet(data) {
   try {
-    // เปิด Spreadsheet
+    // 1. เปิด Spreadsheet และตรวจสอบ Sheet
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     let sheet = ss.getSheetByName(SHEET_NAME);
     
-    // สร้างแผ่นงานใหม่ถ้ายังไม่มี
+    // 2. ถ้าไม่มี Sheet ให้สร้างใหม่พร้อมตั้งค่าเริ่มต้น (ทำครั้งเดียว)
     if (!sheet) {
       console.log('📄 สร้างแผ่นงานใหม่:', SHEET_NAME);
       sheet = ss.insertSheet(SHEET_NAME);
       
-      // เพิ่มหัวตาราง
       const headers = [
-        'วันที่-เวลา',
-        'ชื่อ-นามสกุล', 
-        'เบอร์โทร',
-        'กิจกรรม',
-        'รายการย่อย',
-        'รายละเอียด',
-        'LINE User ID',
-        'LINE Display Name',
-        'Picture URL'
+        'วันที่-เวลา', 'ชื่อ-นามสกุล', 'เบอร์โทร', 'กิจกรรม', 
+        'รายการย่อย', 'รายละเอียด', 'LINE User ID', 
+        'LINE Display Name', 'Picture URL'
       ];
       sheet.appendRow(headers);
       
-      // จัดรูปแบบหัวตาราง
+      // จัดรูปแบบหัวตาราง (Header)
       const headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setBackground('#667eea');
-      headerRange.setFontColor('#ffffff');
-      headerRange.setFontWeight('bold');
-      headerRange.setHorizontalAlignment('center');
-      headerRange.setVerticalAlignment('middle');
+      headerRange.setBackground('#667eea')
+                 .setFontColor('#ffffff')
+                 .setFontWeight('bold')
+                 .setHorizontalAlignment('center')
+                 .setVerticalAlignment('middle');
       
       // ตั้งค่าความกว้างคอลัมน์
-      sheet.setColumnWidth(1, 150); // วันที่-เวลา
-      sheet.setColumnWidth(2, 150); // ชื่อ-นามสกุล
-      sheet.setColumnWidth(3, 120); // เบอร์โทร
-      sheet.setColumnWidth(4, 120); // กิจกรรม
-      sheet.setColumnWidth(5, 180); // รายการย่อย
-      sheet.setColumnWidth(6, 200); // รายละเอียด
-      sheet.setColumnWidth(7, 250); // LINE User ID
-      sheet.setColumnWidth(8, 150); // LINE Display Name
-      sheet.setColumnWidth(9, 250); // Picture URL
+      const widths = [180, 150, 120, 120, 180, 200, 250, 150, 250];
+      widths.forEach((width, index) => {
+        sheet.setColumnWidth(index + 1, width);
+      });
       
-      // ตรึงแถวแรก
       sheet.setFrozenRows(1);
-      
-      console.log('✅ สร้างแผ่นงานและหัวตารางสำเร็จ');
     }
     
-    // เพิ่มข้อมูลแถวใหม่
+    // 3. เตรียมข้อมูล (ใช้ new Date() เพื่อให้ Google Sheet มองเป็นวันที่จริงๆ)
     const rowData = [
-      data.timestamp || new Date().toLocaleString('th-TH'),
+      data.timestamp ? new Date(data.timestamp) : new Date(), 
       data.name || '',
       data.phone || '',
       data.option || '',
@@ -150,42 +241,36 @@ function saveToSheet(data) {
       data.pictureUrl || ''
     ];
     
+    // 4. บันทึกข้อมูล
     sheet.appendRow(rowData);
     
-    // จัดรูปแบบแถวข้อมูล
+    // 5. จัดรูปแบบแถวที่เพิ่งเพิ่ม (ทำเฉพาะที่จำเป็นเพื่อความเร็ว)
     const lastRow = sheet.getLastRow();
-    const dataRange = sheet.getRange(lastRow, 1, 1, rowData.length);
+    const lastColumn = rowData.length;
+    const dataRange = sheet.getRange(lastRow, 1, 1, lastColumn);
     
-    // เพิ่มเส้นขอบ
-    dataRange.setBorder(
-      true, true, true, true, true, true,
-      '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID
-    );
-    
-    // จัดแนวข้อความ
+    // จัดตำแหน่งข้อความ
     dataRange.setVerticalAlignment('middle');
-    sheet.getRange(lastRow, 1, 1, 1).setHorizontalAlignment('center'); // วันที่-เวลา
-    sheet.getRange(lastRow, 2, 1, 1).setHorizontalAlignment('left');   // ชื่อ
-    sheet.getRange(lastRow, 3, 1, 1).setHorizontalAlignment('center'); // เบอร์
+    sheet.getRange(lastRow, 1).setHorizontalAlignment('center'); // วันที่
+    sheet.getRange(lastRow, 3).setHorizontalAlignment('center'); // เบอร์โทร
     
-    // สลับสีแถว
+    // ใส่เส้นขอบแบบเบาๆ และสลับสี (Optional)
+    dataRange.setBorder(true, true, true, true, true, true, '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID);
     if (lastRow % 2 === 0) {
       dataRange.setBackground('#f9fafb');
     }
-    
+
     console.log('✅ บันทึกข้อมูลสำเร็จที่แถว:', lastRow);
     
     return {
       success: true,
-      message: 'บันทึกลง Google Sheet สำเร็จ',
       row: lastRow,
-      sheetName: SHEET_NAME,
-      spreadsheetUrl: ss.getUrl()
+      sheetName: SHEET_NAME
     };
     
   } catch (error) {
-    console.error('❌ เกิดข้อผิดพลาดในการบันทึก Sheet:', error);
-    throw new Error('ไม่สามารถบันทึกลง Google Sheet: ' + error.message);
+    console.error('❌ เกิดข้อผิดพลาด:', error);
+    return { success: false, message: error.message };
   }
 }
 
