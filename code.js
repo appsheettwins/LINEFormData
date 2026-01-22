@@ -19,37 +19,46 @@ function main(){
 
 main();
 
-async function send(e){     
+async function send(e) {
     e.preventDefault();
     
-    // แสดงสถานะกำลังส่ง
+    const btn = document.getElementById('btn');
     btn.disabled = true;
-    btn.value = "กำลังบันทึก...";
+    btn.value = "Saving...";
 
     const firstname = document.getElementById('firstname').value;
     const lastname = document.getElementById('lastname').value;
-    const email = document.getElementById('email').value;    
-    
-    // URL ของ Google Apps Script ที่คุณให้มา
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzcEIJiQ5eszD5bqqXxJlt8TSuC6-UkwSijsWFikOnJ1trNPF0iOKjpegrYFKxjEZyYeQ/exec'; 
+    const email = document.getElementById('email').value;
+
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzcEIJiQ5eszD5bqqXxJlt8TSuC6-UkwSijsWFikOnJ1trNPF0iOKjpegrYFKxjEZyYeQ/exec';
+
+    const payload = {
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        userId: userId // ตัวแปร userId ที่ได้จาก liff.getProfile()
+    };
 
     try {
-        // ใช้ axios.post ตามโครงสร้างเดิมของคุณ
-        // หมายเหตุ: การส่งไป Google Apps Script บางครั้งอาจติด CORS 
-        // หากติดแนะนำให้ใช้ fetch(scriptUrl, {method: 'POST', mode: 'no-cors', ...}) แทน
-        const result = await axios.post(scriptUrl, JSON.stringify({
-            firstname: firstname,
-            lastname: lastname,
-            email: email,
-            userId: userId
-        }));        
-        
-        alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
-        liff.closeWindow(); // ปิดหน้าต่าง LIFF เมื่อสำเร็จ
-        
+        // ใช้ fetch แทน axios เพื่อลดปัญหา CORS กับ Google Apps Script
+        await fetch(scriptUrl, {
+            method: 'POST',
+            mode: 'no-cors', // สำคัญมากสำหรับการส่งไป GAS
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // เนื่องจากโหมด no-cors เราจะไม่เห็น response status 200 
+        // ให้ถือว่าถ้าไม่เข้า catch คือส่งข้อมูลออกไปแล้ว
+        alert("ส่งข้อมูลเรียบร้อยแล้ว!");
+        liff.closeWindow(); //
+
     } catch (error) {
-        console.error("Error sending data:", error);
-        alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+        console.error("Error:", error);
+        alert("เกิดข้อผิดพลาด: " + error.message);
     } finally {
         btn.disabled = false;
         btn.value = "Submit";
