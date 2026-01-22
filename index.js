@@ -37,58 +37,106 @@ function doGet() {
  * @param {Object} data - ข้อมูลจากฟอร์ม
  * @returns {Object} ผลลัพธ์การประมวลผล
  */
+// function processForm(data) {
+//   try {
+//     console.log('==================== เริ่มต้นประมวลผลฟอร์ม ====================');
+//     console.log('📥 ข้อมูลที่ได้รับ:', JSON.stringify(data, null, 2));
+    
+//     const results = {};
+    
+//     // 1. บันทึกข้อมูลลง Google Sheet
+//     console.log('📊 กำลังบันทึกลง Google Sheet...');
+//     try {
+//       results.sheetResult = saveToSheet(data);
+//       console.log('✅ บันทึก Google Sheet สำเร็จ:', results.sheetResult);
+//     } catch (error) {
+//       console.error('❌ บันทึก Google Sheet ล้มเหลว:', error);
+//       results.sheetResult = { success: false, message: error.message };
+//     }
+    
+//     // 2. ส่ง LINE Notify (แจ้งเตือนไปยังกลุ่ม/แชทที่ตั้งค่า)
+//     console.log('📢 กำลังส่ง LINE Notify...');
+//     try {
+//       results.lineNotifyResult = sendLineNotify(data);
+//       console.log('✅ ส่ง LINE Notify สำเร็จ:', results.lineNotifyResult);
+//     } catch (error) {
+//       console.error('❌ ส่ง LINE Notify ล้มเหลว:', error);
+//       results.lineNotifyResult = { success: false, message: error.message };
+//     }
+    
+//     // 3. ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน Messaging API
+//     console.log('💬 กำลังส่งข้อความตอบกลับ...');
+//     try {
+//       results.messageResult = sendLineMessage(data);
+//       console.log('✅ ส่งข้อความตอบกลับสำเร็จ:', results.messageResult);
+//     } catch (error) {
+//       console.error('❌ ส่งข้อความตอบกลับล้มเหลว:', error);
+//       results.messageResult = { success: false, message: error.message };
+//     }
+    
+//     console.log('==================== ประมวลผลเสร็จสิ้น ====================');
+    
+//     return {
+//       success: true,
+//       message: 'บันทึกข้อมูลสำเร็จ',
+//       timestamp: new Date().toLocaleString('th-TH'),
+//       results: results
+//     };
+    
+//   } catch (error) {
+//     console.error('❌ เกิดข้อผิดพลาดร้ายแรง:', error);
+//     console.error('Stack trace:', error.stack);
+//     throw new Error('เกิดข้อผิดพลาด: ' + error.message);
+//   }
+// }
+
+/**
+ * ฟังก์ชันหลักในการรับและประมวลผลข้อมูลจากฟอร์ม
+ */
 function processForm(data) {
   try {
     console.log('==================== เริ่มต้นประมวลผลฟอร์ม ====================');
-    console.log('📥 ข้อมูลที่ได้รับ:', JSON.stringify(data, null, 2));
-    
     const results = {};
     
-    // 1. บันทึกข้อมูลลง Google Sheet
+    // 1. บันทึกข้อมูลลง Google Sheet (เก็บส่วนนี้ไว้)
     console.log('📊 กำลังบันทึกลง Google Sheet...');
     try {
       results.sheetResult = saveToSheet(data);
-      console.log('✅ บันทึก Google Sheet สำเร็จ:', results.sheetResult);
+      console.log('✅ บันทึก Google Sheet สำเร็จ');
     } catch (error) {
       console.error('❌ บันทึก Google Sheet ล้มเหลว:', error);
       results.sheetResult = { success: false, message: error.message };
+      throw error; // ให้หยุดทำงานถ้าบันทึก Sheet ไม่สำเร็จ
     }
     
-    // 2. ส่ง LINE Notify (แจ้งเตือนไปยังกลุ่ม/แชทที่ตั้งค่า)
-    console.log('📢 กำลังส่ง LINE Notify...');
-    try {
-      results.lineNotifyResult = sendLineNotify(data);
-      console.log('✅ ส่ง LINE Notify สำเร็จ:', results.lineNotifyResult);
-    } catch (error) {
-      console.error('❌ ส่ง LINE Notify ล้มเหลว:', error);
-      results.lineNotifyResult = { success: false, message: error.message };
-    }
+    /* --- ปิดส่วนการส่ง LINE ออกทั้งหมด ---
     
-    // 3. ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน Messaging API
-    console.log('💬 กำลังส่งข้อความตอบกลับ...');
-    try {
-      results.messageResult = sendLineMessage(data);
-      console.log('✅ ส่งข้อความตอบกลับสำเร็จ:', results.messageResult);
-    } catch (error) {
-      console.error('❌ ส่งข้อความตอบกลับล้มเหลว:', error);
-      results.messageResult = { success: false, message: error.message };
-    }
+    // 2. ส่ง LINE Notify
+    // (ปิดการใช้งาน)
+    
+    // 3. ส่งข้อความตอบกลับ
+    // (ปิดการใช้งาน)
+    
+    -------------------------------------- */
     
     console.log('==================== ประมวลผลเสร็จสิ้น ====================');
     
     return {
       success: true,
-      message: 'บันทึกข้อมูลสำเร็จ',
+      message: 'บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว',
       timestamp: new Date().toLocaleString('th-TH'),
       results: results
     };
     
   } catch (error) {
-    console.error('❌ เกิดข้อผิดพลาดร้ายแรง:', error);
-    console.error('Stack trace:', error.stack);
+    console.error('❌ เกิดข้อผิดพลาด:', error);
     throw new Error('เกิดข้อผิดพลาด: ' + error.message);
   }
 }
+
+
+
+
 
 
 // ==================== 📊 ฟังก์ชันบันทึกข้อมูลลง Google Sheet ====================
