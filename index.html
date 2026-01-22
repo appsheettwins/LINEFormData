@@ -439,6 +439,80 @@
     </div>
 </div>
 
+
+<script>
+        const LIFF_ID = '2008940385-theIq9K7'; // แก้จุดที่ 1
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvy82xcPP9O7M57Mx0afY8NAK1Zwq9RXlLZwDPd_s_C55qhnv8jX_ugtvzziBD8doD9Q/exec'; // แก้จุดที่ 2
+
+        let userData = {};
+
+        // 1. เริ่มต้น LIFF และดึง Profile
+        async function initializeLiff() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                } else {
+                    const profile = await liff.getProfile();
+                    userData = {
+                        lineUserId: profile.userId,
+                        displayName: profile.displayName
+                    };
+                    console.log("LIFF Ready!");
+                }
+            } catch (error) {
+                console.error("LIFF Initialization failed", error);
+            }
+        }
+
+        // 2. ส่งข้อมูลไป Google Sheets
+        async function sendData() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const option = document.getElementById('option').value;
+
+            if (!name || !phone) {
+                alert("กรุณากรอกข้อมูลให้ครบ");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "กำลังบันทึก...";
+
+            const payload = {
+                name: name,
+                phone: phone,
+                option: option,
+                lineUserId: userData.lineUserId || "N/A",
+                displayName: userData.displayName || "N/A"
+            };
+
+            try {
+                // ใช้โหมด no-cors เพื่อแก้ปัญหาค้างหน้าจอ
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload)
+                });
+
+                alert("บันทึกสำเร็จ!");
+                liff.closeWindow();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("เกิดข้อผิดพลาดในการบันทึก");
+                btn.disabled = false;
+                btn.innerText = "บันทึกข้อมูล";
+            }
+        }
+
+        initializeLiff();
+    </script>
+
+
+
+    
 <script>
     // ==================== ตั้งค่า ====================
     const liffId = '2008940385-theIq9K7';
