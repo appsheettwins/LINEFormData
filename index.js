@@ -203,166 +203,166 @@ function saveToSheet(data) {
 
 // ==================== 📢 ฟังก์ชันส่ง LINE Notify ====================
 
-/**
- * ส่งการแจ้งเตือนผ่าน LINE Notify ไปยังกลุ่ม/แชทที่กำหนด
- * @param {Object} data - ข้อมูลที่จะส่ง
- * @returns {Object} ผลลัพธ์การส่ง
- */
-//function sendLineNotify(data) {
-  try {
-    // ตรวจสอบว่ามี Token หรือไม่
-    if (!LINE_NOTIFY_TOKEN || LINE_NOTIFY_TOKEN === 'ใส่ LINE Notify Token ของคุณที่นี่') {
-      console.warn('⚠️ LINE Notify Token ยังไม่ได้ตั้งค่า');
-      return { 
-        success: false, 
-        message: 'LINE Notify Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
-      };
-    }
+// /**
+//  * ส่งการแจ้งเตือนผ่าน LINE Notify ไปยังกลุ่ม/แชทที่กำหนด
+//  * @param {Object} data - ข้อมูลที่จะส่ง
+//  * @returns {Object} ผลลัพธ์การส่ง
+//  */
+// function sendLineNotify(data) {
+//   try {
+//     // ตรวจสอบว่ามี Token หรือไม่
+//     if (!LINE_NOTIFY_TOKEN || LINE_NOTIFY_TOKEN === 'ใส่ LINE Notify Token ของคุณที่นี่') {
+//       console.warn('⚠️ LINE Notify Token ยังไม่ได้ตั้งค่า');
+//       return { 
+//         success: false, 
+//         message: 'LINE Notify Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
+//       };
+//     }
     
-    // สร้างข้อความแจ้งเตือน
-    const message = `
-🎉 มีการลงทะเบียนใหม่!
+//     // สร้างข้อความแจ้งเตือน
+//     const message = `
+// 🎉 มีการลงทะเบียนใหม่!
 
-👤 ชื่อ: ${data.name}
-📞 เบอร์: ${data.phone}
-🎯 กิจกรรม: ${data.option}
-📍 รายการ: ${data.sub_option}
-${data.details ? '📝 รายละเอียด: ' + data.details : ''}
+// 👤 ชื่อ: ${data.name}
+// 📞 เบอร์: ${data.phone}
+// 🎯 กิจกรรม: ${data.option}
+// 📍 รายการ: ${data.sub_option}
+// ${data.details ? '📝 รายละเอียด: ' + data.details : ''}
 
-👥 ชื่อใน LINE: ${data.displayName || '-'}
-🆔 User ID: ${data.lineUserId}
-⏰ เวลา: ${data.timestamp || new Date().toLocaleString('th-TH')}
-    `.trim();
+// 👥 ชื่อใน LINE: ${data.displayName || '-'}
+// 🆔 User ID: ${data.lineUserId}
+// ⏰ เวลา: ${data.timestamp || new Date().toLocaleString('th-TH')}
+//     `.trim();
     
-    // ส่งข้อความผ่าน LINE Notify API
-    const url = 'https://notify-api.line.me/api/notify';
-    const options = {
-      method: 'post',
-      headers: {
-        'Authorization': 'Bearer ' + LINE_NOTIFY_TOKEN,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      payload: {
-        message: message
-      }
-    };
+//     // ส่งข้อความผ่าน LINE Notify API
+//     const url = 'https://notify-api.line.me/api/notify';
+//     const options = {
+//       method: 'post',
+//       headers: {
+//         'Authorization': 'Bearer ' + LINE_NOTIFY_TOKEN,
+//         'Content-Type': 'application/x-www-form-urlencoded'
+//       },
+//       payload: {
+//         message: message
+//       }
+//     };
     
-    const response = UrlFetchApp.fetch(url, options);
-    const result = JSON.parse(response.getContentText());
+//     const response = UrlFetchApp.fetch(url, options);
+//     const result = JSON.parse(response.getContentText());
     
-    console.log('📨 LINE Notify API response:', result);
+//     console.log('📨 LINE Notify API response:', result);
     
-    if (result.status === 200) {
-      return {
-        success: true,
-        message: 'ส่ง LINE Notify สำเร็จ',
-        response: result
-      };
-    } else {
-      throw new Error('LINE Notify API returned status: ' + result.status);
-    }
+//     if (result.status === 200) {
+//       return {
+//         success: true,
+//         message: 'ส่ง LINE Notify สำเร็จ',
+//         response: result
+//       };
+//     } else {
+//       throw new Error('LINE Notify API returned status: ' + result.status);
+//     }
     
-  } catch (error) {
-    console.error('❌ เกิดข้อผิดพลาดในการส่ง LINE Notify:', error);
-    // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
-    return {
-      success: false,
-      message: 'ส่ง LINE Notify ไม่สำเร็จ: ' + error.message
-    };
-  }
-}
+//   } catch (error) {
+//     console.error('❌ เกิดข้อผิดพลาดในการส่ง LINE Notify:', error);
+//     // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
+//     return {
+//       success: false,
+//       message: 'ส่ง LINE Notify ไม่สำเร็จ: ' + error.message
+//     };
+//   }
+// }
 
 
-// ==================== 💬 ฟังก์ชันส่งข้อความตอบกลับผ่าน Messaging API ====================
+// // ==================== 💬 ฟังก์ชันส่งข้อความตอบกลับผ่าน Messaging API ====================
 
-/**
- * ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน LINE Messaging API
- * @param {Object} data - ข้อมูลที่จะส่ง
- * @returns {Object} ผลลัพธ์การส่ง
- */
-//function sendLineMessage(data) {
-  try {
-    // ตรวจสอบว่ามี Token หรือไม่
-    if (!LINE_MESSAGING_TOKEN || LINE_MESSAGING_TOKEN === 'ใส่ Messaging API Token ของคุณที่นี่') {
-      console.warn('⚠️ LINE Messaging API Token ยังไม่ได้ตั้งค่า');
-      return { 
-        success: false, 
-        message: 'LINE Messaging API Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
-      };
-    }
+// /**
+//  * ส่งข้อความตอบกลับไปหาผู้ใช้ผ่าน LINE Messaging API
+//  * @param {Object} data - ข้อมูลที่จะส่ง
+//  * @returns {Object} ผลลัพธ์การส่ง
+//  */
+// function sendLineMessage(data) {
+//   try {
+//     // ตรวจสอบว่ามี Token หรือไม่
+//     if (!LINE_MESSAGING_TOKEN || LINE_MESSAGING_TOKEN === 'ใส่ Messaging API Token ของคุณที่นี่') {
+//       console.warn('⚠️ LINE Messaging API Token ยังไม่ได้ตั้งค่า');
+//       return { 
+//         success: false, 
+//         message: 'LINE Messaging API Token ยังไม่ได้ตั้งค่า (ข้ามขั้นตอนนี้)' 
+//       };
+//     }
     
-    // ตรวจสอบว่ามี User ID หรือไม่
-    if (!data.lineUserId) {
-      console.warn('⚠️ ไม่พบ LINE User ID');
-      return { 
-        success: false, 
-        message: 'ไม่พบ LINE User ID' 
-      };
-    }
+//     // ตรวจสอบว่ามี User ID หรือไม่
+//     if (!data.lineUserId) {
+//       console.warn('⚠️ ไม่พบ LINE User ID');
+//       return { 
+//         success: false, 
+//         message: 'ไม่พบ LINE User ID' 
+//       };
+//     }
     
-    // สร้างข้อความตอบกลับ
-    const replyMessage = `✅ ลงทะเบียนสำเร็จ!
+//     // สร้างข้อความตอบกลับ
+//     const replyMessage = `✅ ลงทะเบียนสำเร็จ!
 
-สวัสดีคุณ ${data.name} 👋
+// สวัสดีคุณ ${data.name} 👋
 
-📋 ข้อมูลการลงทะเบียนของคุณ:
-👤 ชื่อ: ${data.name}
-📞 เบอร์: ${data.phone}
-🎯 กิจกรรม: ${data.option}
-📍 รายการ: ${data.sub_option}
-${data.details ? '📝 รายละเอียด: ' + data.details : ''}
+// 📋 ข้อมูลการลงทะเบียนของคุณ:
+// 👤 ชื่อ: ${data.name}
+// 📞 เบอร์: ${data.phone}
+// 🎯 กิจกรรม: ${data.option}
+// 📍 รายการ: ${data.sub_option}
+// ${data.details ? '📝 รายละเอียด: ' + data.details : ''}
 
-⏰ วันที่: ${data.timestamp || new Date().toLocaleString('th-TH')}
+// ⏰ วันที่: ${data.timestamp || new Date().toLocaleString('th-TH')}
 
-ขอบคุณที่ลงทะเบียนค่ะ 🙏
-เราจะติดต่อกลับไปในเร็วๆ นี้`;
+// ขอบคุณที่ลงทะเบียนค่ะ 🙏
+// เราจะติดต่อกลับไปในเร็วๆ นี้`;
     
-    // ส่งข้อความผ่าน LINE Messaging API
-    const url = 'https://api.line.me/v2/bot/message/push';
-    const options = {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + LINE_MESSAGING_TOKEN
-      },
-      payload: JSON.stringify({
-        to: data.lineUserId,
-        messages: [
-          {
-            type: 'text',
-            text: replyMessage
-          }
-        ]
-      }),
-      muteHttpExceptions: true
-    };
+//     // ส่งข้อความผ่าน LINE Messaging API
+//     const url = 'https://api.line.me/v2/bot/message/push';
+//     const options = {
+//       method: 'post',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': 'Bearer ' + LINE_MESSAGING_TOKEN
+//       },
+//       payload: JSON.stringify({
+//         to: data.lineUserId,
+//         messages: [
+//           {
+//             type: 'text',
+//             text: replyMessage
+//           }
+//         ]
+//       }),
+//       muteHttpExceptions: true
+//     };
     
-    const response = UrlFetchApp.fetch(url, options);
-    const responseCode = response.getResponseCode();
-    const result = JSON.parse(response.getContentText());
+//     const response = UrlFetchApp.fetch(url, options);
+//     const responseCode = response.getResponseCode();
+//     const result = JSON.parse(response.getContentText());
     
-    console.log('💬 LINE Messaging API response code:', responseCode);
-    console.log('💬 LINE Messaging API response:', result);
+//     console.log('💬 LINE Messaging API response code:', responseCode);
+//     console.log('💬 LINE Messaging API response:', result);
     
-    if (responseCode === 200) {
-      return {
-        success: true,
-        message: 'ส่งข้อความตอบกลับสำเร็จ',
-        response: result
-      };
-    } else {
-      throw new Error('LINE Messaging API returned code: ' + responseCode + ', message: ' + JSON.stringify(result));
-    }
+//     if (responseCode === 200) {
+//       return {
+//         success: true,
+//         message: 'ส่งข้อความตอบกลับสำเร็จ',
+//         response: result
+//       };
+//     } else {
+//       throw new Error('LINE Messaging API returned code: ' + responseCode + ', message: ' + JSON.stringify(result));
+//     }
     
-  } catch (error) {
-    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อความ:', error);
-    // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
-    return {
-      success: false,
-      message: 'ส่งข้อความตอบกลับไม่สำเร็จ: ' + error.message
-    };
-  }
-}
+//   } catch (error) {
+//     console.error('❌ เกิดข้อผิดพลาดในการส่งข้อความ:', error);
+//     // ไม่ throw error เพื่อไม่ให้การบันทึกข้อมูลล้มเหลว
+//     return {
+//       success: false,
+//       message: 'ส่งข้อความตอบกลับไม่สำเร็จ: ' + error.message
+//     };
+//   }
+// }
 
 
 // ==================== 🧪 ฟังก์ชันทดสอบระบบ ====================
