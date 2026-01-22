@@ -20,7 +20,23 @@ const LINE_MESSAGING_TOKEN = 'pUcYHL7II8uYofiWV01d84F/gZJkFR3hoDMU/EE1+C7rWJhrYs
 
 
 
+async function sendDataToSheet(payload) {
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvy82xcPP9O7M57Mx0afY8NAK1Zwq9RXlLZwDPd_s_C55qhnv8jX_ugtvzziBD8doD9Q/exec";
 
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json();
+    if (result.success) {
+      alert("บันทึกข้อมูลเรียบร้อย!");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("ส่งข้อมูลไม่สำเร็จ");
+  }
+}
 
 // ==================== 🌐 ฟังก์ชันแสดงหน้า Web ====================
 
