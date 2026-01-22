@@ -52,7 +52,60 @@ async function handleSaveData() {
 }
 
 
+// ฟังก์ชันเริ่มต้นใช้งาน LIFF
+async function main() {
+  try {
+    // 1. ตรวจสอบก่อนว่า LIFF พร้อมทำงานไหม (ใส่ LIFF ID ของคุณ)
+    await liff.init({ liffId: "ใส่-LIFF-ID-ของคุณ-ตรงนี้" });
 
+    // 2. เช็คว่า Login หรือยัง ถ้ายังให้พาไปหน้า Login
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    } else {
+      // 3. ถ้า Login แล้ว ให้ดึงข้อมูลโปรไฟล์มาเตรียมไว้
+      const profile = await liff.getProfile();
+      console.log("Login สำเร็จ:", profile.displayName);
+      
+      // เก็บค่าโปรไฟล์ไว้ในตัวแปรเพื่อใช้ส่งไป Google Sheet
+      window.userData = {
+        lineUserId: profile.userId,
+        displayName: profile.displayName,
+        pictureUrl: profile.pictureUrl
+      };
+    }
+  } catch (error) {
+    console.error("LIFF Error:", error);
+  }
+}
+
+async function submitForm() {
+  const payload = {
+    name: document.getElementById('name').value,
+    phone: document.getElementById('phone').value,
+    // ดึงค่าจากตัวแปรที่เราเก็บไว้ตอน Login
+    lineUserId: window.userData ? window.userData.lineUserId : 'N/A',
+    displayName: window.userData ? window.userData.displayName : 'Guest',
+    pictureUrl: window.userData ? window.userData.pictureUrl : '',
+    timestamp: new Date().toISOString()
+  };
+
+  const WEB_APP_URL = "ใส่_WEB_APP_URL_จาก_GOOGLE_SCRIPT";
+
+  // ส่งข้อมูลไป Google Apps Script (ใช้ fetch เหมือนข้อที่แล้ว)
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    mode: "no-cors"
+  }).then(() => {
+    alert("บันทึกข้อมูลเรียบร้อย!");
+    liff.closeWindow();
+  });
+}
+
+
+
+// เรียกใช้ฟังก์ชันทันทีที่เปิดหน้าเว็บ
+main();
 
 
 // ==================== 🌐 ฟังก์ชันแสดงหน้า Web ====================
